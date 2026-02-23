@@ -1,19 +1,24 @@
 {
-  "name": "steve-cli",
-  "module": "src/index.ts",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "build": "bun build --compile ./src/index.ts --outfile dist/scli"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@clack/prompts": "^1.0.1",
-    "commander": "^14.0.3"
-  }
+	"name": "steve-cli",
+	"module": "src/index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"build": "bun build --compile ./src/index.ts --outfile dist/scli",
+		"format": "biome format --fix",
+		"lint": "biome lint --fix",
+		"check": "biome check --diagnostic-level=error --fix",
+		"lint:ci": "biome ci --diagnostic-level=error"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.4",
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@clack/prompts": "^1.0.1",
+		"commander": "^14.0.3"
+	}
 }
