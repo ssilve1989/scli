@@ -4,6 +4,7 @@
 	"module": "src/index.ts",
 	"type": "module",
 	"private": true,
+	"packageManager": "bun@1.3.9",
 	"scripts": {
 		"build": "bun build --compile ./src/index.ts --outfile dist/scli",
 		"format": "biome format --fix",

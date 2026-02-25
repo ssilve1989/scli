@@ -2,6 +2,7 @@ import { Command } from "commander";
 import pkg from "../package.json" with { type: "json" };
 import { git } from "./commands/git";
 import { nuke } from "./commands/nuke";
+import { project } from "./commands/project";
 import { setup } from "./commands/setup";
 import { update } from "./commands/update";
 import { getLatestRelease, isUpdateAvailable } from "./utils/update";
@@ -11,6 +12,7 @@ const program = new Command("scli")
 	.version(pkg.version)
 	.addCommand(git)
 	.addCommand(nuke)
+	.addCommand(project)
 	.addCommand(setup)
 	.addCommand(update);
 
