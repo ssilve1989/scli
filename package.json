@@ -11,14 +11,18 @@
 		"check": "biome check --diagnostic-level=error --fix",
 		"lint:ci": "biome ci --diagnostic-level=error",
 		"test": "bun test",
-		"test:coverage": "bun test --coverage"
+		"test:coverage": "bun test --coverage",
+		"prepare": "lefthook install"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.4",
+		"@commitlint/cli": "^20.4.2",
+		"@commitlint/config-conventional": "^20.4.2",
 		"@semantic-release/changelog": "latest",
 		"@semantic-release/git": "latest",
 		"@types/bun": "latest",
-		"conventional-changelog-conventionalcommits": "latest"
+		"conventional-changelog-conventionalcommits": "latest",
+		"lefthook": "^2.1.1"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
