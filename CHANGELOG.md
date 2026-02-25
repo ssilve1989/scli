@@ -1,3 +1,9 @@
+## [0.1.1](https://github.com/ssilve1989/personal-cli/compare/v0.1.0...v0.1.1) (2026-02-25)
+
+### Bug Fixes
+
+* **rebase:** fixes rebase command ([ee703ef](https://github.com/ssilve1989/personal-cli/commit/ee703ef318a32f163aa8d994a137cf2acc2a31e4))
+
 ## [0.1.0](https://github.com/ssilve1989/personal-cli/compare/v0.0.1...v0.1.0) (2026-02-25)
 
 ### Features
