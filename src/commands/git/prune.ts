@@ -1,25 +1,33 @@
 import * as prompts from "@clack/prompts";
 import { Command } from "commander";
 
+export function parseBranchList(raw: string): {
+	currentBranch: string;
+	branches: string[];
+} {
+	const lines = raw.split("\n").filter((l) => l.trim());
+	let currentBranch = "";
+	const branches: string[] = [];
+
+	for (const line of lines) {
+		const name = line.replace("*", "").trim();
+		if (line.trimStart().startsWith("*")) {
+			currentBranch = name;
+		} else {
+			branches.push(name);
+		}
+	}
+
+	return { currentBranch, branches };
+}
+
 export const prune = new Command("prune")
 	.description("Interactively delete local git branches")
 	.argument("[pattern]", "Filter branches by substring")
 	.option("-f, --force", "Skip confirmation prompt")
 	.action(async (pattern: string | undefined, opts: { force?: boolean }) => {
 		const result = await Bun.$`git branch`.text();
-		const lines = result.split("\n").filter((l) => l.trim());
-
-		let currentBranch = "";
-		const branches: string[] = [];
-
-		for (const line of lines) {
-			const name = line.replace("*", "").trim();
-			if (line.startsWith("*")) {
-				currentBranch = name;
-			} else {
-				branches.push(name);
-			}
-		}
+		const { currentBranch, branches } = parseBranchList(result);
 
 		const filtered = pattern
 			? branches.filter((b) => b.includes(pattern))

@@ -8,7 +8,9 @@
 		"format": "biome format --fix",
 		"lint": "biome lint --fix",
 		"check": "biome check --diagnostic-level=error --fix",
-		"lint:ci": "biome ci --diagnostic-level=error"
+		"lint:ci": "biome ci --diagnostic-level=error",
+		"test": "bun test",
+		"test:coverage": "bun test --coverage"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.4",

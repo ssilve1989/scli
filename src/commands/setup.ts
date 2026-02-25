@@ -57,7 +57,7 @@ set noswapfile
 set nobackup
 ${VIMRC_END}`;
 
-function applyManagedSection(
+export function applyManagedSection(
 	existing: string,
 	section: string,
 	beginMarker: string,
@@ -274,8 +274,9 @@ export const setup = new Command("setup")
 
 		if (configureGit) {
 			try {
-				const gitNameCheck =
-					await Bun.$`git config --global user.name`.nothrow().quiet();
+				const gitNameCheck = await Bun.$`git config --global user.name`
+					.nothrow()
+					.quiet();
 				if (gitNameCheck.exitCode === 0) {
 					prompts.log.info(
 						`Git user.name already set to: ${gitNameCheck.stdout.toString().trim()}`,
@@ -319,7 +320,5 @@ export const setup = new Command("setup")
 			}
 		}
 
-		prompts.outro(
-			"Setup complete! Restart your shell or run: source ~/.zshrc",
-		);
+		prompts.outro("Setup complete! Restart your shell or run: source ~/.zshrc");
 	});

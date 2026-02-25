@@ -1,12 +1,14 @@
-export async function getDefaultBranch(): Promise<string> {
+type Shell = typeof Bun.$;
+
+export async function getDefaultBranch(shell: Shell = Bun.$): Promise<string> {
 	try {
-		const ref = await Bun.$`git symbolic-ref refs/remotes/origin/HEAD`
+		const ref = await shell`git symbolic-ref refs/remotes/origin/HEAD`
 			.quiet()
 			.text();
 		return ref.trim().split("/").pop()!;
 	} catch {
 		// Fallback: check if main or master exists locally
-		const branches = await Bun.$`git branch --list`.quiet().text();
+		const branches = await shell`git branch --list`.quiet().text();
 		const list = branches
 			.split("\n")
 			.map((b) => b.replace("*", "").trim())
@@ -17,8 +19,8 @@ export async function getDefaultBranch(): Promise<string> {
 	}
 }
 
-export async function getCurrentBranch(): Promise<string> {
-	const branch = await Bun.$`git rev-parse --abbrev-ref HEAD`.quiet().text();
+export async function getCurrentBranch(shell: Shell = Bun.$): Promise<string> {
+	const branch = await shell`git rev-parse --abbrev-ref HEAD`.quiet().text();
 	const name = branch.trim();
 	if (name === "HEAD") {
 		throw new Error("Detached HEAD state — cannot determine current branch");
@@ -26,13 +28,13 @@ export async function getCurrentBranch(): Promise<string> {
 	return name;
 }
 
-export async function ensureNotOnDefaultBranch(): Promise<{
+export async function ensureNotOnDefaultBranch(shell: Shell = Bun.$): Promise<{
 	currentBranch: string;
 	defaultBranch: string;
 }> {
 	const [currentBranch, defaultBranch] = await Promise.all([
-		getCurrentBranch(),
-		getDefaultBranch(),
+		getCurrentBranch(shell),
+		getDefaultBranch(shell),
 	]);
 	if (currentBranch === defaultBranch) {
 		throw new Error(
