@@ -1,6 +1,6 @@
 # scli
 
-Steve's CLI toolkit.
+Personal CLI Toolkit 
 
 ## Install
 
