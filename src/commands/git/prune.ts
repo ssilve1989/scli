@@ -1,5 +1,6 @@
 import * as prompts from "@clack/prompts";
 import { Command } from "commander";
+import { getShellError } from "../../utils/errors";
 
 export function parseBranchList(raw: string): {
 	currentBranch: string;
@@ -72,8 +73,8 @@ export const prune = new Command("prune")
 			try {
 				await Bun.$`git branch -D ${branch}`.quiet();
 				console.log(`  Deleted ${branch}`);
-			} catch {
-				console.error(`  Failed to delete ${branch}`);
+			} catch (e: unknown) {
+				console.error(`  Failed to delete ${branch}: ${getShellError(e)}`);
 			}
 		}
 

@@ -1,5 +1,6 @@
 import * as prompts from "@clack/prompts";
 import { Command } from "commander";
+import { getShellError } from "../../utils/errors";
 import { ensureNotOnDefaultBranch } from "../../utils/git";
 
 type Shell = typeof Bun.$;
@@ -55,7 +56,7 @@ export const rebase = new Command("rebase")
 				prompts.log.info("  git rebase --abort       (to cancel)");
 				if (stderrText) prompts.log.info(stderrText);
 			} else {
-				prompts.log.error(stderrText || err.message || "Unknown error");
+				prompts.log.error(getShellError(e));
 			}
 			process.exit(1);
 		}

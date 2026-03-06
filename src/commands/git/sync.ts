@@ -1,5 +1,6 @@
 import * as prompts from "@clack/prompts";
 import { Command } from "commander";
+import { getShellError } from "../../utils/errors";
 import { getCurrentBranch, getDefaultBranch } from "../../utils/git";
 
 export const sync = new Command("sync")
@@ -28,9 +29,9 @@ export const sync = new Command("sync")
 			}
 
 			prompts.outro("Synced!");
-		} catch (e: any) {
+		} catch (e: unknown) {
 			s.stop("Failed");
-			prompts.log.error(e.message);
+			prompts.log.error(getShellError(e));
 			process.exit(1);
 		}
 	});

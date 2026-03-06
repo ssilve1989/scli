@@ -1,5 +1,6 @@
 import * as prompts from "@clack/prompts";
 import { Command } from "commander";
+import { getShellError } from "../../utils/errors";
 import { getDefaultBranch } from "../../utils/git";
 
 export const start = new Command("start")
@@ -22,9 +23,9 @@ export const start = new Command("start")
 			s.stop(`On new branch ${name}`);
 
 			prompts.outro("Ready to go!");
-		} catch (e: any) {
+		} catch (e: unknown) {
 			s.stop("Failed");
-			prompts.log.error(e.message);
+			prompts.log.error(getShellError(e));
 			process.exit(1);
 		}
 	});

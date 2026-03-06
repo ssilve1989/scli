@@ -1,5 +1,6 @@
 import * as prompts from "@clack/prompts";
 import { Command } from "commander";
+import { getShellError } from "../../utils/errors";
 import { getCurrentBranch } from "../../utils/git";
 
 export const amend = new Command("amend")
@@ -33,9 +34,9 @@ export const amend = new Command("amend")
 			}
 
 			prompts.outro("Done!");
-		} catch (e: any) {
+		} catch (e: unknown) {
 			s.stop("Failed");
-			prompts.log.error(e.message);
+			prompts.log.error(getShellError(e));
 			process.exit(1);
 		}
 	});
