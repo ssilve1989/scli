@@ -1,3 +1,9 @@
+## [0.2.1](https://github.com/ssilve1989/personal-cli/compare/v0.2.0...v0.2.1) (2026-03-06)
+
+### Bug Fixes
+
+* **git:** surface shell stderr in error messages ([632bb28](https://github.com/ssilve1989/personal-cli/commit/632bb288fe27071865c0f84b9f0776b832944c77))
+
 ## [0.2.0](https://github.com/ssilve1989/personal-cli/compare/v0.1.1...v0.2.0) (2026-02-25)
 
 ### Features
