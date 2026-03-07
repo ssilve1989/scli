@@ -68,9 +68,9 @@ describe("generateMiseToml", () => {
 		expect(result).not.toContain("pnpm");
 	});
 
-	test("docker is always included", () => {
-		expect(generateMiseToml(bunConfig)).toContain('docker = "latest"');
-		expect(generateMiseToml(pnpmNodeConfig)).toContain('docker = "latest"');
+	test("docker is not included", () => {
+		expect(generateMiseToml(bunConfig)).not.toContain("docker");
+		expect(generateMiseToml(pnpmNodeConfig)).not.toContain("docker");
 	});
 
 	test("pnpm+bun runtime includes both bun and pnpm", () => {
@@ -138,16 +138,14 @@ describe("generatePackageJson", () => {
 });
 
 describe("generateCiYml", () => {
-	test("bun runtime uses setup-bun action", () => {
-		const result = generateCiYml(bunConfig);
-		expect(result).toContain("oven-sh/setup-bun@v2");
-		expect(result).not.toContain("actions/setup-node");
+	test("uses mise action", () => {
+		expect(generateCiYml(bunConfig)).toContain("jdx/mise-action@v3");
+		expect(generateCiYml(pnpmNodeConfig)).toContain("jdx/mise-action@v3");
 	});
 
-	test("node runtime uses setup-node action", () => {
-		const result = generateCiYml(pnpmNodeConfig);
-		expect(result).toContain("actions/setup-node@v4");
-		expect(result).not.toContain("oven-sh/setup-bun");
+	test("does not use runtime-specific setup actions", () => {
+		expect(generateCiYml(bunConfig)).not.toContain("oven-sh/setup-bun");
+		expect(generateCiYml(pnpmNodeConfig)).not.toContain("actions/setup-node");
 	});
 
 	test("bun pm uses bun install", () => {
@@ -172,14 +170,16 @@ describe("generateCiYml", () => {
 });
 
 describe("generateReleaseYml", () => {
-	test("bun runtime uses setup-bun action", () => {
-		const result = generateReleaseYml(bunConfig);
-		expect(result).toContain("oven-sh/setup-bun@v2");
+	test("uses mise action", () => {
+		expect(generateReleaseYml(bunConfig)).toContain("jdx/mise-action@v3");
+		expect(generateReleaseYml(pnpmNodeConfig)).toContain("jdx/mise-action@v3");
 	});
 
-	test("node runtime uses setup-node action", () => {
-		const result = generateReleaseYml(pnpmNodeConfig);
-		expect(result).toContain("actions/setup-node@v4");
+	test("does not use runtime-specific setup actions", () => {
+		expect(generateReleaseYml(bunConfig)).not.toContain("oven-sh/setup-bun");
+		expect(generateReleaseYml(pnpmNodeConfig)).not.toContain(
+			"actions/setup-node",
+		);
 	});
 
 	test("uses semantic-release action", () => {

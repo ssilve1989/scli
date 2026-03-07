@@ -23,8 +23,6 @@ export function generateMiseToml(config: ProjectConfig): string {
 		tools.push('pnpm = "latest"');
 	}
 
-	tools.push('docker = "latest"');
-
 	return `[tools]\n${tools.join("\n")}\n`;
 }
 
@@ -181,13 +179,6 @@ export function generateReleaseRc(): string {
 }
 
 export function generateCiYml(config: ProjectConfig): string {
-	const setupStep =
-		config.runtime === "bun"
-			? "      - uses: oven-sh/setup-bun@v2"
-			: `      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*`;
-
 	const installCmd = config.pm === "bun" ? "bun install" : "pnpm install";
 	const lintCmd = config.pm === "bun" ? "bun run lint:ci" : "pnpm run lint:ci";
 	const testCmd = config.pm === "bun" ? "bun test" : "pnpm test";
@@ -209,7 +200,7 @@ jobs:
         with:
           fetch-depth: 0
 
-${setupStep}
+      - uses: jdx/mise-action@v3
 
       - run: ${installCmd}
 
@@ -228,13 +219,6 @@ ${setupStep}
 }
 
 export function generateReleaseYml(config: ProjectConfig): string {
-	const setupStep =
-		config.runtime === "bun"
-			? "      - uses: oven-sh/setup-bun@v2"
-			: `      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*`;
-
 	const installCmd = config.pm === "bun" ? "bun install" : "pnpm install";
 	const lintCmd = config.pm === "bun" ? "bun run lint:ci" : "pnpm run lint:ci";
 	const testCmd = config.pm === "bun" ? "bun test" : "pnpm test";
@@ -260,7 +244,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-${setupStep}
+      - uses: jdx/mise-action@v3
 
       - run: ${installCmd}
 
