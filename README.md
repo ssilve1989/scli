@@ -111,6 +111,37 @@ Arguments:
 
 Sync the default branch and return to the current branch.
 
+### `scli project`
+
+Project utilities.
+
+#### `scli project new <name>`
+
+Scaffold a new TypeScript project.
+
+```
+Arguments:
+  name            Name for the new project
+```
+
+#### `scli project add <feature>`
+
+Add a feature to an existing project.
+
+```
+Arguments:
+  feature         Feature to add (lefthook, standard-release)
+```
+
+### `scli update`
+
+Update scli to the latest version.
+
+```
+Options:
+  --check         Check for updates without installing
+```
+
 ## Development
 
 ```bash
