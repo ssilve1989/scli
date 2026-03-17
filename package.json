@@ -32,7 +32,7 @@
 	"dependencies": {
 		"@clack/prompts": "^1.0.1",
 		"commander": "^14.0.3",
-		"marked": "15",
+		"marked": "17",
 		"marked-terminal": "^7.3.0"
 	}
 }
