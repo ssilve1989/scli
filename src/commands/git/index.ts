@@ -5,6 +5,7 @@ import { prune } from "./prune";
 import { rebase } from "./rebase";
 import { start } from "./start";
 import { sync } from "./sync";
+import { worktree } from "./worktree";
 
 export const git = new Command("git")
 	.description("Git utilities")
@@ -13,4 +14,5 @@ export const git = new Command("git")
 	.addCommand(rebase)
 	.addCommand(amend)
 	.addCommand(start)
-	.addCommand(deploy);
+	.addCommand(deploy)
+	.addCommand(worktree);
