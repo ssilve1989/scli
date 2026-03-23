@@ -1,3 +1,11 @@
+## [0.6.0](https://github.com/ssilve1989/scli/compare/v0.5.0...v0.6.0) (2026-03-23)
+
+### Features
+
+* **lefthook:** add install-hooks.js script to guard against non-git envs ([7ee1d07](https://github.com/ssilve1989/scli/commit/7ee1d07b7535f26a280633db890bad254404d0c4))
+* **project:** add renovate as a selectable feature in project add ([c3bf563](https://github.com/ssilve1989/scli/commit/c3bf56327daeb87470541e0508d4a92378fae0ba))
+* **project:** add renovate github actions workflow to renovate feature ([97127b9](https://github.com/ssilve1989/scli/commit/97127b9cf9357de3c8d6f94e6cc57bf5fb9b0015))
+
 ## [0.5.0](https://github.com/ssilve1989/scli/compare/v0.4.1...v0.5.0) (2026-03-17)
 
 ### Features
