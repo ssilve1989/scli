@@ -64,8 +64,8 @@ pub enum GitCommands {
     /// Rebase current branch on default branch and force push
     Rebase {
         /// Skip the force push step
-        #[arg(long, default_value_t = true)]
-        push: bool,
+        #[arg(long = "no-push")]
+        no_push: bool,
     },
     /// Create a new branch from a fresh default branch
     Start {
