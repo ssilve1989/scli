@@ -147,3 +147,25 @@ Options:
 cargo build
 cargo test
 ```
+
+### Git hooks
+
+Pre-commit and commit-msg hooks live in `.githooks/`. To enable them:
+
+```bash
+mise run setup
+# or manually:
+git config core.hooksPath .githooks
+```
+
+This configures `core.hooksPath` locally for the repo. The pre-commit hook runs `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test`. The commit-msg hook validates conventional commit format (`type(scope): description`).
+
+### Available mise tasks
+
+```bash
+mise run test       # cargo test
+mise run format     # cargo fmt
+mise run lint       # cargo clippy -- -D warnings
+mise run build      # cargo build --release
+mise run setup      # git config core.hooksPath .githooks
+```
