@@ -3,15 +3,19 @@ use crate::utils::git::{ensure_not_on_default_branch, Shell};
 
 fn run_cmd(args: &[&str]) -> Result<String> {
     let output = std::process::Command::new("git").args(args).output()?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(anyhow::anyhow!("git failed: {stderr}"));
+    }
     Ok(String::from_utf8_lossy(&output.stdout).to_string())
 }
 
 pub fn perform_rebase(shell: &dyn Shell, no_push: bool) -> Result<(String, String)> {
     let (current, default) = ensure_not_on_default_branch(shell)?;
-    run_cmd(&["fetch", "origin", &default])?;
-    run_cmd(&["rebase", &format!("origin/{default}")])?;
+    shell.run("git", &["fetch", "origin", &default])?;
+    shell.run("git", &["rebase", &format!("origin/{default}")])?;
     if !no_push {
-        run_cmd(&["push", "--force-with-lease", "origin", &current])?;
+        shell.run("git", &["push", "--force-with-lease", "origin", &current])?;
     }
     Ok((current, default))
 }
@@ -78,6 +82,8 @@ mod tests {
         let shell = MockShell::new(vec![
             Ok("feature-x".to_string()),
             Ok("refs/remotes/origin/main".to_string()),
+            Ok("".to_string()), // fetch
+            Ok("".to_string()), // rebase
         ]);
         let (current, default) = perform_rebase(&shell, true).unwrap();
         assert_eq!(current, "feature-x");
