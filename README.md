@@ -144,6 +144,6 @@ Options:
 ## Development
 
 ```bash
-bun install
-bun run index.ts
+cargo build
+cargo test
 ```
