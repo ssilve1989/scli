@@ -1,3 +1,72 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.7.0](https://github.com/ssilve1989/scli/releases/tag/v0.7.0) - 2026-05-31
+
+### Added
+
+- rewrite CLI in Rust ([#13](https://github.com/ssilve1989/scli/pull/13))
+- *(lefthook)* add install-hooks.js script to guard against non-git envs
+- *(project)* add renovate github actions workflow to renovate feature
+- *(project)* add renovate as a selectable feature in project add
+- *(git)* add worktree subcommand
+- *(project)* add `project add <feature>` subcommand
+- *(project)* use mise for CI tool management in scaffold
+- *(update)* display rendered release notes on update
+- *(project)* add new command to scaffold TypeScript projects ([#4](https://github.com/ssilve1989/scli/pull/4))
+- add self-update command and background update notifications
+- *(cli)* add scli setup command for machine bootstrapping
+- *(cli)* Add git workflow and process management commands
+
+### Fixed
+
+- use linux-gnu target instead of musl in release build
+- *(project)* generate commitlintrc and install packages when adding lefthook
+- *(project)* add @semantic-release/npm with npmPublish disabled to releaserc
+- *(types)* replace @types/marked-terminal with correct local declaration
+- *(git)* surface shell stderr in error messages
+- *(rebase)* fixes rebase command
+
+### Other
+
+- *(deps-dev)* bump @commitlint/config-conventional
+- *(deps)* update deps
+- *(deps)* bump marked from 17.0.6 to 18.0.0
+- *(deps)* bump dependencies to latest versions
+- *(release)* 0.6.1 [skip ci]
+- *(deps)* bump marked from 15.0.12 to 17.0.5
+- *(release)* 0.6.0 [skip ci]
+- *(release)* 0.5.0 [skip ci]
+- *(release)* 0.4.1 [skip ci]
+- add project and update commands to README
+- *(release)* 0.4.0 [skip ci]
+- fix linting errors
+- *(release)* 0.3.0 [skip ci]
+- *(release)* 0.2.1 [skip ci]
+- update readme
+- *(release)* 0.2.0 [skip ci]
+- enable performance rules
+- add lefthook pre-commit and commit-msg hooks ([#3](https://github.com/ssilve1989/scli/pull/3))
+- *(release)* 0.1.1 [skip ci]
+- *(release)* 0.1.0 [skip ci]
+- update lockfile
+- update readme
+- *(release)* 0.0.1 [skip ci]
+- formatting
+- add workflow_dispatch trigger to release workflow
+- add semantic-release with bun binary distribution
+- add gha setup
+- add test coverage
+- add dependabot
+- add biomejs
+- Update README with install script and bump Bun to v1.3.9
+- initial commit
 ## [0.6.1](https://github.com/ssilve1989/scli/compare/v0.6.0...v0.6.1) (2026-04-12)
 
 ### Bug Fixes
