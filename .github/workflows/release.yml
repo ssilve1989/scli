@@ -2,13 +2,11 @@ name: Release
 
 on:
   push:
-    branches: [master]
+    branches: [master, main]
   workflow_dispatch:
 
 permissions:
   contents: write
-  issues: write
-  pull-requests: write
 
 jobs:
   release:
@@ -17,21 +15,13 @@ jobs:
       new_release_published: ${{ steps.semantic.outputs.new_release_published }}
       new_release_version: ${{ steps.semantic.outputs.new_release_version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false  # required for @semantic-release/git push
-
-      - uses: oven-sh/setup-bun@v2
-
-      - run: bun install
-
-      - run: bun run lint:ci
-
-      - run: bun test
+          persist-credentials: false
 
       - id: semantic
-        uses: cycjimmy/semantic-release-action@v6
+        uses: cycjimmy/semantic-release-action@v4
         with:
           extra_plugins: |
             @semantic-release/changelog
@@ -41,31 +31,31 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
-    name: Build binaries
-    needs: release
+    needs: [release]
     if: needs.release.outputs.new_release_published == 'true'
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            slug: scli-macos-x64
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            slug: scli-macos-arm64
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            slug: scli-linux-x64
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          ref: v${{ needs.release.outputs.new_release_version }}
+          targets: ${{ matrix.target }}
 
-      - uses: oven-sh/setup-bun@v2
+      - run: cargo build --target ${{ matrix.target }} --release
 
-      - run: bun install
-
-      - name: Build cross-platform binaries
-        run: |
-          bun build --compile --target=bun-linux-x64 ./src/index.ts --outfile dist/scli-linux-x64
-          bun build --compile --target=bun-darwin-arm64 ./src/index.ts --outfile dist/scli-macos-arm64
-          bun build --compile --target=bun-darwin-x64 ./src/index.ts --outfile dist/scli-macos-x64
-
-      - name: Upload binaries to GitHub release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release upload v${{ needs.release.outputs.new_release_version }} \
-            dist/scli-linux-x64 \
-            dist/scli-macos-arm64 \
-            dist/scli-macos-x64 \
-            --clobber
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.release.outputs.new_release_version }}
+          files: target/${{ matrix.target }}/release/scli
