@@ -14,19 +14,18 @@ Pre-built binaries are available on the [Releases page](https://github.com/ssilv
 | macOS (Intel) | `scli-macos-x64` |
 | Linux (x64) | `scli-linux-x64` |
 
-Download, rename to `scli`, make executable, and move to your `$PATH`:
+Download, make executable, and move to your `$PATH`:
 
 ```bash
-chmod +x scli-macos-arm64
-mv scli-macos-arm64 ~/.local/bin/scli
+chmod +x scli-*
+mv scli-* ~/.local/bin/scli
 ```
 
 ### Build from source
 
 ```bash
-bun install
-bun run build
-mv dist/scli ~/.local/bin/scli
+cargo build --release
+mv target/release/scli ~/.local/bin/scli
 ```
 
 ## Commands
