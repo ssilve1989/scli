@@ -169,3 +169,9 @@ mise run lint       # cargo clippy -- -D warnings
 mise run build      # cargo build --release
 mise run setup      # git config core.hooksPath .githooks
 ```
+
+### Releasing
+
+Releases are automated via [release-plz](https://release-plz.dev). On push to `master`, a Release PR is opened/updated with version bumps and a changelog derived from conventional commits. Merging the Release PR creates a git tag, publishes a GitHub release, and triggers cross-compiled binary builds for macOS (x64/arm64) and Linux (x64).
+
+**Required repo setting:** Enable **Settings → Actions → General → Workflow permissions → "Allow GitHub Actions to create and approve pull requests"** for the release-plz workflow to function.
