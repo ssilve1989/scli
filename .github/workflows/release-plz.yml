@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  release-plz-pr:
+    name: Release PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: release-plz-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: release-plz/action@v0.5.129
+        with:
+          command: release-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-plz-release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    outputs:
+      releases_created: ${{ steps.release-plz.outputs.releases_created }}
+      tag: ${{ steps.extract-tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Run release-plz release
+        id: release-plz
+        uses: release-plz/action@v0.5.129
+        with:
+          command: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract tag
+        id: extract-tag
+        if: steps.release-plz.outputs.releases_created == 'true'
+        run: |
+          tag=$(echo '${{ steps.release-plz.outputs.releases }}' | jq -r '.[0].tag')
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Release tag: $tag"
+
+  build:
+    needs: [release-plz-release]
+    if: needs.release-plz-release.outputs.releases_created == 'true'
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            slug: scli-macos-x64
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            slug: scli-macos-arm64
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            slug: scli-linux-x64
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - run: cargo build --target ${{ matrix.target }} --release
+      - name: Upload binary
+        run: |
+          gh release upload "${{ needs.release-plz-release.outputs.tag }}" \
+            "target/${{ matrix.target }}/release/scli#${{ matrix.slug }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

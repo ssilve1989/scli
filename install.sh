@@ -1,4 +1,8 @@
 #!/bin/sh
 set -e
-bun install && bun run build && ln -sf "$(pwd)/dist/scli" ~/.local/bin/scli
+mise install
+cargo build --release
+mkdir -p ~/.local/bin
+rm -f ~/.local/bin/scli
+cp target/release/scli ~/.local/bin/scli
 echo "Installed scli to ~/.local/bin/scli"

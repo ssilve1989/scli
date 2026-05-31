@@ -1,6 +1,0 @@
-[test]
-include = ["tests/**/*.test.ts"]
-preload = ["./tests/setup/preload.ts"]
-coverageReporter = ["text", "lcov"]
-coverageInclude = ["src/**/*.ts"]
-coverageExclude = ["src/index.ts", "src/commands/git/index.ts"]

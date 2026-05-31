@@ -2,29 +2,19 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [master, main]
   pull_request:
 
 jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: dtolnay/rust-toolchain@stable
 
-      - run: bun install
-
-      - name: Validate commit messages
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            bunx --bun commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
-          else
-            bunx --bun commitlint --from HEAD~1 --to HEAD --verbose
-          fi
-
-      - run: bun run lint:ci
-
-      - run: bun test
+      - run: cargo build
+      - run: cargo test
+      - run: cargo clippy -- -D warnings

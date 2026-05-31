@@ -14,19 +14,18 @@ Pre-built binaries are available on the [Releases page](https://github.com/ssilv
 | macOS (Intel) | `scli-macos-x64` |
 | Linux (x64) | `scli-linux-x64` |
 
-Download, rename to `scli`, make executable, and move to your `$PATH`:
+Download, make executable, and move to your `$PATH`:
 
 ```bash
-chmod +x scli-macos-arm64
-mv scli-macos-arm64 ~/.local/bin/scli
+chmod +x scli-*
+mv scli-* ~/.local/bin/scli
 ```
 
 ### Build from source
 
 ```bash
-bun install
-bun run build
-mv dist/scli ~/.local/bin/scli
+cargo build --release
+mv target/release/scli ~/.local/bin/scli
 ```
 
 ## Commands
@@ -145,6 +144,28 @@ Options:
 ## Development
 
 ```bash
-bun install
-bun run index.ts
+cargo build
+cargo test
+```
+
+### Git hooks
+
+Pre-commit and commit-msg hooks live in `.githooks/`. To enable them:
+
+```bash
+mise run setup
+# or manually:
+git config core.hooksPath .githooks
+```
+
+This configures `core.hooksPath` locally for the repo. The pre-commit hook runs `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test`. The commit-msg hook validates conventional commit format (`type(scope): description`).
+
+### Available mise tasks
+
+```bash
+mise run test       # cargo test
+mise run format     # cargo fmt
+mise run lint       # cargo clippy -- -D warnings
+mise run build      # cargo build --release
+mise run setup      # git config core.hooksPath .githooks
 ```
