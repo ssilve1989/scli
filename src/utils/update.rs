@@ -94,17 +94,25 @@ mod tests {
         assert!(is_update_available("0.0.1", "0.0.2"));
     }
 
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
     #[test]
     fn test_get_platform_slug_linux() {
-        if cfg!(target_os = "linux") && cfg!(target_arch = "x86_64") {
-            assert_eq!(get_platform_slug().unwrap(), "linux-x64");
-        }
+        assert_eq!(get_platform_slug().unwrap(), "linux-x64");
+    }
+
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+    #[test]
+    fn test_get_platform_slug_macos_arm64() {
+        assert_eq!(get_platform_slug().unwrap(), "macos-arm64");
     }
 
     #[test]
-    fn test_get_platform_slug_macos_arm64() {
-        if cfg!(target_os = "macos") && cfg!(target_arch = "aarch64") {
-            assert_eq!(get_platform_slug().unwrap(), "macos-arm64");
+    fn test_get_platform_slug_unsupported() {
+        if !(cfg!(all(target_os = "linux", target_arch = "x86_64"))
+            || cfg!(all(target_os = "macos", target_arch = "aarch64"))
+            || cfg!(all(target_os = "macos", target_arch = "x86_64")))
+        {
+            assert!(get_platform_slug().is_err());
         }
     }
 
