@@ -1,5 +1,5 @@
+use crate::utils::git::{Shell, ensure_not_on_default_branch};
 use anyhow::Result;
-use crate::utils::git::{ensure_not_on_default_branch, Shell};
 
 fn run_cmd(args: &[&str]) -> Result<String> {
     let output = std::process::Command::new("git").args(args).output()?;
@@ -37,7 +37,9 @@ pub fn execute_rebase(shell: &dyn Shell, no_push: bool) -> Result<()> {
             eprintln!("Rebase conflict detected. Resolve manually:");
             eprintln!("  git rebase --continue   (after resolving)");
             eprintln!("  git rebase --abort       (to cancel)");
-            if !stderr.is_empty() { eprintln!("{stderr}"); }
+            if !stderr.is_empty() {
+                eprintln!("{stderr}");
+            }
         } else {
             eprintln!("Rebase failed: {stderr}");
         }
@@ -67,7 +69,9 @@ mod tests {
 
     impl MockShell {
         fn new(responses: Vec<anyhow::Result<String>>) -> Self {
-            Self { responses: Mutex::new(responses) }
+            Self {
+                responses: Mutex::new(responses),
+            }
         }
     }
 

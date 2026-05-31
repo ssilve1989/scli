@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+echo "=> Running cargo fmt --check..."
+cargo fmt --check --quiet 2>/dev/null || {
+  echo "ERROR: cargo fmt found style issues. Run 'cargo fmt' to fix."
+  exit 1
+}
+
+echo "=> Running cargo clippy -- -D warnings..."
+cargo clippy -- -D warnings 2>/dev/null || {
+  echo "ERROR: clippy found issues."
+  exit 1
+}
+
+echo "=> Running cargo test..."
+cargo test 2>/dev/null || {
+  echo "ERROR: tests failed."
+  exit 1
+}
+
+echo "=> All checks passed."

@@ -16,3 +16,7 @@ description = "Lint Rust code"
 [tasks.build]
 run = "cargo build --release"
 description = "Build release binary"
+
+[tasks.setup]
+run = "git config core.hooksPath .githooks"
+description = "Configure git to use .githooks/ for hook scripts"

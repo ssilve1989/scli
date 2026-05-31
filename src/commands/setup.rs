@@ -60,8 +60,8 @@ pub fn apply_managed_section(
     let begin_idx = existing.find(begin_marker);
     let end_idx = existing.find(end_marker);
 
-    let has_both = begin_idx.is_some() && end_idx.is_some()
-        && begin_idx.unwrap() < end_idx.unwrap();
+    let has_both =
+        begin_idx.is_some() && end_idx.is_some() && begin_idx.unwrap() < end_idx.unwrap();
 
     if has_both {
         let before = &existing[..begin_idx.unwrap()];
@@ -116,7 +116,10 @@ pub fn execute_setup(force: bool) -> Result<()> {
             println!("Installing Oh My Zsh...");
             run_shell(
                 "sh",
-                &["-c", "RUNZSH=no sh -c \"$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\""],
+                &[
+                    "-c",
+                    "RUNZSH=no sh -c \"$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"",
+                ],
             )?;
             println!("Oh My Zsh installed.");
         }
@@ -124,15 +127,11 @@ pub fn execute_setup(force: bool) -> Result<()> {
 
     // Step 2: mise
     if prompt_confirm("Install mise?")? {
-        let check = std::process::Command::new("which")
-            .arg("mise")
-            .output()?;
+        let check = std::process::Command::new("which").arg("mise").output()?;
         if check.status.success() {
             println!("mise already installed — skipped.");
         } else {
-            let brew_check = std::process::Command::new("which")
-                .arg("brew")
-                .output()?;
+            let brew_check = std::process::Command::new("which").arg("brew").output()?;
             if brew_check.status.success() {
                 println!("Installing mise via Homebrew...");
                 run_shell("brew", &["install", "mise"])?;
@@ -159,10 +158,12 @@ pub fn execute_setup(force: bool) -> Result<()> {
             std::fs::write(&zshrc_path, &updated)?;
             println!(".zshrc already contains managed section — updated in place.");
         } else if force {
-            if exists { backup_file(&zshrc_path)?; }
+            if exists {
+                backup_file(&zshrc_path)?;
+            }
             let omz_dir = format!("{}/.oh-my-zsh", home);
             let omz_line = if Path::new(&omz_dir).exists() {
-                format!("export ZSH=\"$HOME/.oh-my-zsh\"\nsource $ZSH/oh-my-zsh.sh\n\n")
+                "export ZSH=\"$HOME/.oh-my-zsh\"\nsource $ZSH/oh-my-zsh.sh\n\n".to_string()
             } else {
                 String::new()
             };
@@ -191,7 +192,9 @@ pub fn execute_setup(force: bool) -> Result<()> {
             std::fs::write(&vimrc_path, &updated)?;
             println!(".vimrc already contains managed section — updated in place.");
         } else if force {
-            if exists { backup_file(&vimrc_path)?; }
+            if exists {
+                backup_file(&vimrc_path)?;
+            }
             let content = format!("{VIMRC_SECTION}\n");
             std::fs::write(&vimrc_path, &content)?;
             println!(".vimrc written.");
@@ -258,7 +261,7 @@ mod tests {
     fn test_apply_managed_section_preserves_surrounding() {
         let existing = format!("before\n{ZSHRC_SECTION}\nafter");
         let result = apply_managed_section(&existing, ZSHRC_SECTION, ZSHRC_BEGIN, ZSHRC_END);
-    assert!(result.starts_with("before\n"));
+        assert!(result.starts_with("before\n"));
         assert!(result.ends_with("\nafter"));
     }
 

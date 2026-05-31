@@ -51,7 +51,9 @@ pub fn execute_nuke(target: &str, force: bool) -> Result<()> {
     let my_pid = std::process::id();
 
     let entries = if let Ok(port) = target.parse::<u16>() {
-        if port < 1 { return Err(anyhow::anyhow!("Invalid port: {port}")); }
+        if port < 1 {
+            return Err(anyhow::anyhow!("Invalid port: {port}"));
+        }
         let raw = run_cmd("lsof", &["-i", &format!(":{port}"), "-t"])?;
         parse_lsof_output(&raw, port)
     } else {
@@ -155,8 +157,14 @@ mod tests {
     #[test]
     fn test_filter_own_pid_removes_matching() {
         let entries = vec![
-            ProcessEntry { pid: 100, label: "a".to_string() },
-            ProcessEntry { pid: 200, label: "b".to_string() },
+            ProcessEntry {
+                pid: 100,
+                label: "a".to_string(),
+            },
+            ProcessEntry {
+                pid: 200,
+                label: "b".to_string(),
+            },
         ];
         let result = filter_own_pid(&entries, 200);
         assert_eq!(result.len(), 1);
@@ -166,8 +174,14 @@ mod tests {
     #[test]
     fn test_filter_own_pid_removes_zero() {
         let entries = vec![
-            ProcessEntry { pid: 0, label: "bad".to_string() },
-            ProcessEntry { pid: 100, label: "good".to_string() },
+            ProcessEntry {
+                pid: 0,
+                label: "bad".to_string(),
+            },
+            ProcessEntry {
+                pid: 100,
+                label: "good".to_string(),
+            },
         ];
         let result = filter_own_pid(&entries, 999);
         assert_eq!(result.len(), 1);
@@ -176,7 +190,10 @@ mod tests {
 
     #[test]
     fn test_filter_own_pid_passthrough() {
-        let entries = vec![ProcessEntry { pid: 100, label: "a".to_string() }];
+        let entries = vec![ProcessEntry {
+            pid: 100,
+            label: "a".to_string(),
+        }];
         let result = filter_own_pid(&entries, 999);
         assert_eq!(result.len(), 1);
     }

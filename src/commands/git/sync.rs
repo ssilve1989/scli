@@ -1,5 +1,5 @@
+use crate::utils::git::{Shell, get_current_branch, get_default_branch};
 use anyhow::Result;
-use crate::utils::git::{get_current_branch, get_default_branch, Shell};
 
 fn run_cmd(args: &[&str]) -> Result<String> {
     let output = std::process::Command::new("git").args(args).output()?;

@@ -7,7 +7,9 @@ pub fn parse_branch_list(raw: &str) -> (String, Vec<String>) {
 
     for line in raw.lines() {
         let name = line.replace('*', "").trim().to_string();
-        if name.is_empty() { continue; }
+        if name.is_empty() {
+            continue;
+        }
         if line.trim_start().starts_with('*') {
             current = name;
         } else {
@@ -48,7 +50,10 @@ pub fn execute_prune(pattern: Option<&str>, force: bool) -> Result<()> {
             .with_prompt(format!("Select branches to delete (current: {current})"))
             .items(&filtered.iter().map(|s| s.as_str()).collect::<Vec<_>>())
             .interact()?;
-        selections.into_iter().map(|i| filtered[i].clone()).collect()
+        selections
+            .into_iter()
+            .map(|i| filtered[i].clone())
+            .collect()
     };
 
     if to_delete.is_empty() {

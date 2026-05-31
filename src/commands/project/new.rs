@@ -23,7 +23,11 @@ pub fn generate_mise_toml(config: &ProjectConfig) -> String {
 }
 
 pub fn generate_package_json(config: &ProjectConfig) -> String {
-    let test_cmd = if config.pm == "bun" { "bun test" } else { "pnpm test" };
+    let test_cmd = if config.pm == "bun" {
+        "bun test"
+    } else {
+        "pnpm test"
+    };
 
     let mut pkg: serde_json::Value = serde_json::json!({
         "name": config.name,
@@ -47,7 +51,11 @@ pub fn generate_package_json(config: &ProjectConfig) -> String {
         }
     });
 
-    let runtime_dep = if config.runtime == "bun" { "@types/bun" } else { "@types/node" };
+    let runtime_dep = if config.runtime == "bun" {
+        "@types/bun"
+    } else {
+        "@types/node"
+    };
     pkg["devDependencies"][runtime_dep] = serde_json::json!("latest");
 
     if config.workspaces && config.pm == "bun" {
@@ -76,7 +84,8 @@ pub fn generate_ts_config() -> String {
 		"noImplicitOverride": true
 	}
 }
-"#.to_string()
+"#
+    .to_string()
 }
 
 pub fn generate_biome_json() -> String {
@@ -114,11 +123,16 @@ pub fn generate_biome_json() -> String {
 		}
 	}
 }
-"#.to_string()
+"#
+    .to_string()
 }
 
 pub fn generate_lefthook_yml(pm: &str) -> String {
-    let dlx_cmd = if pm == "bun" { "bunx --bun" } else { "pnpm dlx" };
+    let dlx_cmd = if pm == "bun" {
+        "bunx --bun"
+    } else {
+        "pnpm dlx"
+    };
     format!("pre-commit:
   commands:
     biome:
@@ -159,14 +173,27 @@ pub fn generate_release_rc() -> String {
 		"@semantic-release/github"
 	]
 }
-"#.to_string()
+"#
+    .to_string()
 }
 
 pub fn generate_ci_yml(pm: &str) -> String {
-    let install = if pm == "bun" { "bun install" } else { "pnpm install" };
-    let lint = if pm == "bun" { "bun run lint:ci" } else { "pnpm run lint:ci" };
+    let install = if pm == "bun" {
+        "bun install"
+    } else {
+        "pnpm install"
+    };
+    let lint = if pm == "bun" {
+        "bun run lint:ci"
+    } else {
+        "pnpm run lint:ci"
+    };
     let test = if pm == "bun" { "bun test" } else { "pnpm test" };
-    let commitlint = if pm == "bun" { "bunx --bun commitlint" } else { "pnpm dlx commitlint" };
+    let commitlint = if pm == "bun" {
+        "bunx --bun commitlint"
+    } else {
+        "pnpm dlx commitlint"
+    };
     format!(
         "name: CI
 
@@ -203,8 +230,16 @@ jobs:
 }
 
 pub fn generate_release_yml(pm: &str) -> String {
-    let install = if pm == "bun" { "bun install" } else { "pnpm install" };
-    let lint = if pm == "bun" { "bun run lint:ci" } else { "pnpm run lint:ci" };
+    let install = if pm == "bun" {
+        "bun install"
+    } else {
+        "pnpm install"
+    };
+    let lint = if pm == "bun" {
+        "bun run lint:ci"
+    } else {
+        "pnpm run lint:ci"
+    };
     let test = if pm == "bun" { "bun test" } else { "pnpm test" };
     format!(
         "name: Release
@@ -266,7 +301,8 @@ if (isGitRepo) {
 } else {
   console.log('Skipping lefthook install (not in a git repository)');
 }
-".to_string()
+"
+    .to_string()
 }
 
 pub fn generate_pnpm_workspace() -> String {
@@ -309,7 +345,8 @@ pub fn generate_renovate_json() -> String {
 		}
 	]
 }
-"#.to_string()
+"#
+    .to_string()
 }
 
 pub fn generate_renovate_yml() -> String {
@@ -333,7 +370,8 @@ jobs:
           token: ${{ secrets.RENOVATE_TOKEN }}
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
-"#.to_string()
+"#
+    .to_string()
 }
 
 fn run_cmd_in(cwd: &str, cmd: &str, args: &[&str]) -> Result<String> {
@@ -393,12 +431,24 @@ pub fn execute_project_new(name: &str) -> Result<()> {
     std::fs::write(root.join("biome.json"), generate_biome_json())?;
     std::fs::write(root.join(".gitignore"), generate_gitignore())?;
     std::fs::write(root.join("lefthook.yml"), generate_lefthook_yml(&config.pm))?;
-    std::fs::write(root.join("scripts/install-hooks.js"), generate_install_hooks_script())?;
+    std::fs::write(
+        root.join("scripts/install-hooks.js"),
+        generate_install_hooks_script(),
+    )?;
     std::fs::write(root.join(".commitlintrc.json"), generate_commitlint_rc())?;
     std::fs::write(root.join(".releaserc.json"), generate_release_rc())?;
-    std::fs::write(root.join(".github/workflows/ci.yml"), generate_ci_yml(&config.pm))?;
-    std::fs::write(root.join(".github/workflows/release.yml"), generate_release_yml(&config.pm))?;
-    std::fs::write(root.join("src/index.ts"), generate_entry_point(&config.runtime))?;
+    std::fs::write(
+        root.join(".github/workflows/ci.yml"),
+        generate_ci_yml(&config.pm),
+    )?;
+    std::fs::write(
+        root.join(".github/workflows/release.yml"),
+        generate_release_yml(&config.pm),
+    )?;
+    std::fs::write(
+        root.join("src/index.ts"),
+        generate_entry_point(&config.runtime),
+    )?;
 
     if config.workspaces && config.pm == "pnpm" {
         std::fs::write(root.join("pnpm-workspace.yaml"), generate_pnpm_workspace())?;

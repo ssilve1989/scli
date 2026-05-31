@@ -1,5 +1,5 @@
-use anyhow::{anyhow, Result};
-use crate::utils::errors::{extract_stderr, ShellError};
+use crate::utils::errors::{ShellError, extract_stderr};
+use anyhow::{Result, anyhow};
 
 pub trait Shell {
     fn run(&self, cmd: &str, args: &[&str]) -> Result<String>;
@@ -9,9 +9,7 @@ pub struct RealShell;
 
 impl Shell for RealShell {
     fn run(&self, cmd: &str, args: &[&str]) -> Result<String> {
-        let output = std::process::Command::new(cmd)
-            .args(args)
-            .output()?;
+        let output = std::process::Command::new(cmd).args(args).output()?;
         if !output.status.success() {
             let stderr = extract_stderr(&output);
             return Err(anyhow!(ShellError::CommandFailed { stderr }));
@@ -22,9 +20,7 @@ impl Shell for RealShell {
 
 pub fn get_default_branch(shell: &dyn Shell) -> Result<String> {
     match shell.run("git", &["symbolic-ref", "refs/remotes/origin/HEAD"]) {
-        Ok(ref_) => {
-            Ok(ref_.split('/').last().unwrap_or("").to_string())
-        }
+        Ok(ref_) => Ok(ref_.split('/').next_back().unwrap_or("").to_string()),
         Err(_) => {
             let branches = shell.run("git", &["branch", "--list"])?;
             let list: Vec<String> = branches
@@ -47,7 +43,9 @@ pub fn get_current_branch(shell: &dyn Shell) -> Result<String> {
     let branch = shell.run("git", &["rev-parse", "--abbrev-ref", "HEAD"])?;
     let name = branch.trim().to_string();
     if name == "HEAD" {
-        Err(anyhow!("Detached HEAD state — cannot determine current branch"))
+        Err(anyhow!(
+            "Detached HEAD state — cannot determine current branch"
+        ))
     } else {
         Ok(name)
     }
@@ -75,7 +73,9 @@ mod tests {
 
     impl MockShell {
         fn new(responses: Vec<anyhow::Result<String>>) -> Self {
-            Self { responses: Mutex::new(responses) }
+            Self {
+                responses: Mutex::new(responses),
+            }
         }
     }
 

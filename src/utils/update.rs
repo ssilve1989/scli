@@ -24,13 +24,15 @@ pub fn get_latest_release() -> anyhow::Result<ReleaseInfo> {
     let tag = data.tag_name;
     let version = tag.strip_prefix('v').unwrap_or(&tag).to_string();
     let notes = data.body.unwrap_or_default();
-    Ok(ReleaseInfo { version, tag, notes })
+    Ok(ReleaseInfo {
+        version,
+        tag,
+        notes,
+    })
 }
 
 pub fn is_update_available(current: &str, latest: &str) -> bool {
-    let parse = |v: &str| -> Vec<u32> {
-        v.split('.').filter_map(|s| s.parse().ok()).collect()
-    };
+    let parse = |v: &str| -> Vec<u32> { v.split('.').filter_map(|s| s.parse().ok()).collect() };
     let c = parse(current);
     let l = parse(latest);
     let c_maj = c.first().copied().unwrap_or(0);
@@ -40,8 +42,12 @@ pub fn is_update_available(current: &str, latest: &str) -> bool {
     let l_min = l.get(1).copied().unwrap_or(0);
     let l_pat = l.get(2).copied().unwrap_or(0);
 
-    if l_maj != c_maj { return l_maj > c_maj; }
-    if l_min != c_min { return l_min > c_min; }
+    if l_maj != c_maj {
+        return l_maj > c_maj;
+    }
+    if l_min != c_min {
+        return l_min > c_min;
+    }
     l_pat > c_pat
 }
 

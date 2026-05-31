@@ -1,7 +1,8 @@
+use crate::utils::update::{
+    get_download_url, get_latest_release, get_platform_slug, is_update_available,
+};
 use anyhow::Result;
 use dialoguer::{Confirm, theme::ColorfulTheme};
-use crate::utils::update::{get_latest_release, is_update_available, get_platform_slug, get_download_url};
-
 
 pub fn execute_update(check: bool) -> Result<()> {
     println!("Checking for latest release...");
@@ -24,10 +25,16 @@ pub fn execute_update(check: bool) -> Result<()> {
         return Ok(());
     }
 
-    println!("New version available: v{} (current: v{current})", latest.version);
+    println!(
+        "New version available: v{} (current: v{current})",
+        latest.version
+    );
 
     if !latest.notes.is_empty() {
-        println!("\n--- Release Notes ---\n{}\n---------------------", latest.notes);
+        println!(
+            "\n--- Release Notes ---\n{}\n---------------------",
+            latest.notes
+        );
     }
 
     if check {
@@ -66,10 +73,13 @@ pub fn execute_update(check: bool) -> Result<()> {
     let body = response.into_body().read_to_vec()?;
     println!("Download complete.");
 
-    let tmp_path = std::env::temp_dir().join(format!("scli-update-{}", std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap()
-        .as_millis()));
+    let tmp_path = std::env::temp_dir().join(format!(
+        "scli-update-{}",
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_millis()
+    ));
     std::fs::write(&tmp_path, &body)?;
 
     use std::os::unix::fs::PermissionsExt;
@@ -83,6 +93,9 @@ pub fn execute_update(check: bool) -> Result<()> {
         let _ = std::fs::remove_file(&tmp_path);
     }
 
-    println!("Updated to v{}. Restart scli to use the new version.", latest.version);
+    println!(
+        "Updated to v{}. Restart scli to use the new version.",
+        latest.version
+    );
     Ok(())
 }

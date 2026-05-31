@@ -1,5 +1,5 @@
-use anyhow::Result;
 use crate::utils::git::Shell;
+use anyhow::Result;
 
 fn run_cmd(args: &[&str]) -> Result<String> {
     let output = std::process::Command::new("git").args(args).output()?;
@@ -20,7 +20,10 @@ pub fn create_worktree(shell: &dyn Shell, name: &str, base: &str) -> Result<Stri
 
     run_cmd(&["fetch", "origin", base])?;
     run_cmd(&[
-        "worktree", "add", "-b", name,
+        "worktree",
+        "add",
+        "-b",
+        name,
         worktree_path.to_str().unwrap(),
         &format!("origin/{base}"),
     ])?;
@@ -42,7 +45,10 @@ pub fn execute_worktree(shell: &dyn Shell, name: &str, base: &str) -> Result<()>
 
     println!("Creating worktree at {}...", worktree_path.display());
     run_cmd(&[
-        "worktree", "add", "-b", name,
+        "worktree",
+        "add",
+        "-b",
+        name,
         worktree_path.to_str().unwrap(),
         &format!("origin/{base}"),
     ])?;
@@ -63,7 +69,9 @@ mod tests {
 
     impl MockShell {
         fn new(responses: Vec<anyhow::Result<String>>) -> Self {
-            Self { responses: Mutex::new(responses) }
+            Self {
+                responses: Mutex::new(responses),
+            }
         }
     }
 
@@ -75,9 +83,7 @@ mod tests {
 
     #[test]
     fn test_create_worktree_resolves_path() {
-        let shell = MockShell::new(vec![
-            Ok("/home/user/repo".to_string()),
-        ]);
+        let shell = MockShell::new(vec![Ok("/home/user/repo".to_string())]);
         let result = shell.run("git", &["rev-parse", "--show-toplevel"]);
         assert_eq!(result.unwrap(), "/home/user/repo");
     }

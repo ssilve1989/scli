@@ -32,14 +32,14 @@ fn detect_pm(cwd: &str) -> Result<String> {
     let pkg_path = cwd.join("package.json");
     if pkg_path.exists() {
         let content = std::fs::read_to_string(&pkg_path)?;
-        if let Ok(pkg) = serde_json::from_str::<serde_json::Value>(&content) {
-            if let Some(pm) = pkg.get("packageManager").and_then(|v| v.as_str()) {
-                if pm.starts_with("pnpm") {
-                    return Ok("pnpm".to_string());
-                }
-                if pm.starts_with("bun") {
-                    return Ok("bun".to_string());
-                }
+        if let Ok(pkg) = serde_json::from_str::<serde_json::Value>(&content)
+            && let Some(pm) = pkg.get("packageManager").and_then(|v| v.as_str())
+        {
+            if pm.starts_with("pnpm") {
+                return Ok("pnpm".to_string());
+            }
+            if pm.starts_with("bun") {
+                return Ok("bun".to_string());
             }
         }
     }
@@ -49,7 +49,11 @@ fn detect_pm(cwd: &str) -> Result<String> {
         .items(&["bun", "pnpm"])
         .default(0)
         .interact()?;
-    Ok(if pm_idx == 0 { "bun".to_string() } else { "pnpm".to_string() })
+    Ok(if pm_idx == 0 {
+        "bun".to_string()
+    } else {
+        "pnpm".to_string()
+    })
 }
 
 fn add_lefthook(cwd: &str, pm: &str) -> Result<()> {
@@ -74,20 +78,22 @@ fn add_lefthook(cwd: &str, pm: &str) -> Result<()> {
     let pkg_path = root.join("package.json");
     if pkg_path.exists() {
         let content = std::fs::read_to_string(&pkg_path)?;
-        if let Ok(mut pkg) = serde_json::from_str::<serde_json::Value>(&content) {
-            if pkg
+        if let Ok(mut pkg) = serde_json::from_str::<serde_json::Value>(&content)
+            && pkg
                 .get("scripts")
                 .and_then(|s| s.as_object())
-                .map_or(true, |s| !s.contains_key("prepare"))
-            {
-                if let Some(obj) = pkg.get_mut("scripts").and_then(|s| s.as_object_mut()) {
-                    obj.insert(
-                        "prepare".to_string(),
-                        serde_json::json!("node scripts/install-hooks.js"),
-                    );
-                }
-                std::fs::write(&pkg_path, serde_json::to_string_pretty(&pkg).unwrap() + "\n")?;
+                .is_none_or(|s| !s.contains_key("prepare"))
+        {
+            if let Some(obj) = pkg.get_mut("scripts").and_then(|s| s.as_object_mut()) {
+                obj.insert(
+                    "prepare".to_string(),
+                    serde_json::json!("node scripts/install-hooks.js"),
+                );
             }
+            std::fs::write(
+                &pkg_path,
+                serde_json::to_string_pretty(&pkg).unwrap() + "\n",
+            )?;
         }
     }
 
